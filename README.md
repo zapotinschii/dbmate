@@ -208,6 +208,18 @@ A `socket` or `host` parameter can be specified to connect through a unix socket
 DATABASE_URL="postgres://username:password@/database_name?socket=/var/run/postgresql"
 ```
 
+For passwordless authentication such as PostgreSQL [peer auth](https://www.postgresql.org/docs/current/auth-pg-hba-conf.html), the password can be omitted (note the `@` is still required):
+
+```sh
+DATABASE_URL="postgres://username@/database_name?socket=/var/run/postgresql"
+```
+
+If the username is also omitted, it defaults to the `PGUSER` environment variable if set, otherwise the OS username (via `lib/pq`, matching `libpq` behavior):
+
+```sh
+DATABASE_URL="postgres:///database_name?socket=/var/run/postgresql"
+```
+
 A `search_path` parameter can be used to specify the [current schema](https://www.postgresql.org/docs/13/ddl-schemas.html#DDL-SCHEMAS-PATH) while applying migrations, as well as for dbmate's `schema_migrations` table.
 If the schema does not exist, it will be created automatically. If multiple comma-separated schemas are passed, the first will be used for the `schema_migrations` table.
 
