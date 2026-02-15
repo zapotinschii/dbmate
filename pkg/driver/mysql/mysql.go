@@ -272,7 +272,12 @@ func (drv *Driver) schemaMigrationsDump(db *sql.DB) ([]byte, error) {
 // DumpSchema returns the current database schema
 func (drv *Driver) DumpSchema(db *sql.DB, extraArgs ...string) ([]byte, error) {
 	ver := getMysqldumpVersion()
-	args := append(drv.mysqldumpArgs(ver), extraArgs...)
+	argsBase := drv.mysqldumpArgs(ver)
+	dbName := argsBase[len(argsBase)-1] // last element is database name
+	flags := argsBase[:len(argsBase)-1]
+	args := append(flags, extraArgs...) // add user arguments after flags so they can override them
+	args = append(args, dbName)         // database name should be last
+
 	schema, err := dbutil.RunCommand(ver.Command, args...)
 	if err != nil {
 		return nil, err

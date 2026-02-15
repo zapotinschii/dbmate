@@ -540,6 +540,10 @@ It is possible to pass additional arguments directly to mysqldump or pg_dump:
 $ dbmate dump -- --flag1 --flag2
 $ dbmate --url="..." dump -- --restrict-key=restrict_key
 ```
+for mysqldump:
+```sh
+mysqldump [options] [your_arguments_go_here] db_name
+```
 
 > Note: The `schema.sql` file will contain a complete schema for your database, even if some tables or columns were created outside of dbmate migrations.
 
