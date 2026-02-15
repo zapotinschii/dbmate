@@ -225,7 +225,7 @@ func NewApp() *cli.App {
 				// Capture all arguments provided after the `dump` command
 				// and pass them through to the underlying tool
 				// e.g. [--flag] for "dbmate dump -- --flag"
-				db.DumpExtraArgs = c.Args().Slice()
+				db.Args = c.Args().Slice()
 				return db.DumpSchema()
 			}),
 		},

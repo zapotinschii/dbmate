@@ -60,8 +60,8 @@ type DB struct {
 	WaitInterval time.Duration
 	// WaitTimeout specifies maximum time for connection attempts
 	WaitTimeout time.Duration
-	// Additional arguments for pg/mysql schema dump
-	DumpExtraArgs []string
+	// Additional arguments for the subcommand being invoked e.g. pg_dump/mysqldump
+	Args []string
 }
 
 // StatusResult represents an available migration status
@@ -85,7 +85,7 @@ func New(databaseURL *url.URL) *DB {
 		WaitBefore:          false,
 		WaitInterval:        time.Second,
 		WaitTimeout:         60 * time.Second,
-		DumpExtraArgs:       []string{},
+		Args:                []string{},
 	}
 }
 
@@ -209,7 +209,7 @@ func (db *DB) DumpSchema() error {
 	}
 	defer dbutil.MustClose(sqlDB)
 
-	schema, err := drv.DumpSchema(sqlDB, db.DumpExtraArgs...)
+	schema, err := drv.DumpSchema(sqlDB, db.Args...)
 	if err != nil {
 		return err
 	}

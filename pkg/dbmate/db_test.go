@@ -154,7 +154,7 @@ func TestDumpSchemaExtraArgs(t *testing.T) {
 	require.NoError(t, err)
 
 	// Dump schema passing the undefined extra args
-	db.DumpExtraArgs = []string{"--non-existing-argument"}
+	db.Args = []string{"--non-existing-argument"}
 	err = db.DumpSchema()
 
 	// assert error is returned and contains the invalid argument
