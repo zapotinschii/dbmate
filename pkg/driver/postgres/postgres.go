@@ -258,8 +258,14 @@ func (drv *Driver) DumpSchema(db *sql.DB, extraArgs ...string) ([]byte, error) {
 		args = append(args, "--restrict-key=dbmate")
 	}
 
-	args = append(args, extraArgs...)
-	args = append(args, connectionArgsForDump(drv.databaseURL)...)
+	otherArgs := connectionArgsForDump(drv.databaseURL)
+	dbname := otherArgs[len(otherArgs)-1]
+	flags := otherArgs[:len(otherArgs)-1]
+
+	args = append(args, flags...)
+	args = append(args, extraArgs...) // allow users to override default flags
+	args = append(args, dbname)
+
 	schema, err := dbutil.RunCommand("pg_dump", args...)
 	if err != nil {
 		return nil, err
