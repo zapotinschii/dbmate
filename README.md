@@ -529,12 +529,6 @@ It is recommended to check this file into source control, so that you can easily
 
 To dump the `schema.sql` file without performing any other actions, run `dbmate dump`. Unlike other dbmate actions, this command relies on the respective `pg_dump`, `mysqldump`, or `sqlite3` commands being available in your PATH. If these tools are not available, dbmate will silently skip the schema dump step during `up`, `migrate`, or `rollback` actions. You can diagnose the issue by running `dbmate dump` and looking at the output:
 
-```sh
-$ dbmate dump
-exec: "pg_dump": executable file not found in $PATH
-```
-
-On Ubuntu or Debian systems, you can fix this by installing `postgresql-client`, `mysql-client`, or `sqlite3` respectively. Ensure that the package version you install is greater than or equal to the version running on your database server.
 It is possible to pass additional arguments directly to mysqldump or pg_dump:
 ```sh
 $ dbmate dump -- --flag1 --flag2
@@ -542,8 +536,18 @@ $ dbmate --url="..." dump -- --restrict-key=restrict_key
 ```
 for mysqldump:
 ```sh
-mysqldump [options] [your_arguments_go_here] db_name
+mysqldump [default_options] [your_arguments_go_here] dbname
 ```
+for pg_dump:
+```sh
+pg_dump [default_options] [your_arguments_go_here] dbname
+``` 
+
+```sh
+$ dbmate dump
+exec: "pg_dump": executable file not found in $PATH
+```
+On Ubuntu or Debian systems, you can fix this by installing `postgresql-client`, `mysql-client`, or `sqlite3` respectively. Ensure that the package version you install is greater than or equal to the version running on your database server.
 
 > Note: The `schema.sql` file will contain a complete schema for your database, even if some tables or columns were created outside of dbmate migrations.
 
