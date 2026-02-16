@@ -140,7 +140,7 @@ func connectionString(u *url.URL) string {
 	return out.String()
 }
 
-func connectionArgsForDump(conn *url.URL) []string {
+func connectionArgsForDump(conn *url.URL, userArgs ...string) []string {
 	u, err := url.Parse(connectionString(conn))
 	if err != nil {
 		panic(err)
@@ -160,8 +160,9 @@ func connectionArgsForDump(conn *url.URL) []string {
 			out = append(out, "--schema", schema)
 		}
 	}
-	out = append(out, u.String())
 
+	out = append(out, userArgs...)
+	out = append(out, u.String())
 	return out
 }
 
@@ -258,14 +259,7 @@ func (drv *Driver) DumpSchema(db *sql.DB, extraArgs ...string) ([]byte, error) {
 		args = append(args, "--restrict-key=dbmate")
 	}
 
-	otherArgs := connectionArgsForDump(drv.databaseURL)
-	dbname := otherArgs[len(otherArgs)-1]
-	flags := otherArgs[:len(otherArgs)-1]
-
-	args = append(args, flags...)
-	args = append(args, extraArgs...) // allow users to override default flags
-	args = append(args, dbname)
-
+	args = append(args, connectionArgsForDump(drv.databaseURL, extraArgs...)...)
 	schema, err := dbutil.RunCommand("pg_dump", args...)
 	if err != nil {
 		return nil, err
